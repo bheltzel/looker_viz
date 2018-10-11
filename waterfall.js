@@ -52,7 +52,7 @@
           create: function(element, config) {
               // initialize a div to place the table
               // var css = element.innerHTML = `<div id="transposed_table"></div>`;
-              element.innerHTML = '<div id="container" style="margin: 0 auto"></div>';
+              element.innerHTML = '<div id="container" style="height:100%; width:100%; position:absolute; margin: 0 auto"></div>';
           },
           // Render in response to the data or settings changing
           update: function(data, element, config, queryResponse) {
