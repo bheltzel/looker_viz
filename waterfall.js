@@ -17,6 +17,13 @@
                 display: "number",
                 default: 0
               }
+              , money: {
+                section: "Formatting",
+                type: "boolean",
+                label: "Money Value Labels",
+                display: "radio",
+                default: false
+              }
               , value_1: {
                   section: "Positive / Negative",
                   type: "boolean",
@@ -213,7 +220,15 @@
                       enabled: true,
                       formatter: function() {
                           if (this.y != 0) {
-                            return this.y;
+
+                            var formatted_number;
+                            if (config.money) {
+                              formatted_number = this.y > 999 ? '$' + (this.y/1000).toFixed(1) + 'k' : '$' + this.y;
+                            } else {
+                              formatted_number = this.y;
+                            }
+                            
+                            return formatted_number;
                           } else {
                             return null;
                           }
@@ -227,7 +242,15 @@
                       enabled: true,
                       formatter: function() {
                           if (this.y != 0) {
-                            return this.y;
+
+                            var formatted_number;
+                            if (config.money) {
+                              formatted_number = this.y > 999 ? '$' + (this.y/1000).toFixed(1) + 'k' : '$' + this.y;
+                            } else {
+                              formatted_number = this.y;
+                            }
+                            
+                            return formatted_number;
                           } else {
                             return null;
                           }
@@ -245,9 +268,15 @@
                     dataLabels: {
                       enabled: true,
                       formatter: function() {
-                          format_numbers(1);
                           if (this.y != 0) {
-                            var formatted_number = this.y > 999 ? (this.y/1000).toFixed(1) + 'k' : this.y
+
+                            var formatted_number;
+                            if (config.money) {
+                              formatted_number = this.y > 999 ? '$' + (this.y/1000).toFixed(1) + 'k' : '$' + this.y;
+                            } else {
+                              formatted_number = this.y;
+                            }
+                            
                             return formatted_number;
                           } else {
                             return null;
@@ -258,11 +287,6 @@
               });
 
               // done();
-          },
-
-          format_numbers: function(num) {
-              console.log(num);
-              return true;
           }
       };
 
