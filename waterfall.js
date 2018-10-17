@@ -3,7 +3,21 @@
           // id: "transposed_table",      // id is only necessary for legacy custom visualizations
           // label: "Transposed Table",   // label is only necessary for legacy custom visualizations
           options: {
-              value_1: {
+              color_range: {
+                section: "Formatting",
+                type: "array",
+                label: "Color Range",
+                display: "colors"
+                ,default: ['green', 'red', 'blue']
+              }
+              , y_min: {
+                section: "Formatting",
+                type: "number",
+                label: "Y-Axis Minimum Value",
+                display: "number",
+                default: 0
+              }
+              , value_1: {
                   section: "Positive / Negative",
                   type: "boolean",
                   label: "Value 1 - is Negative?",
@@ -45,7 +59,27 @@
                   display: "radio",
                   default: false
               }
-
+              , value_7: {
+                  section: "Positive / Negative",
+                  type: "boolean",
+                  label: "Value 7 - is Negative?",
+                  display: "radio",
+                  default: false
+              }
+              , value_8: {
+                  section: "Positive / Negative",
+                  type: "boolean",
+                  label: "Value 8 - is Negative?",
+                  display: "radio",
+                  default: false
+              }
+              , value_9: {
+                  section: "Positive / Negative",
+                  type: "boolean",
+                  label: "Value 9 - is Negative?",
+                  display: "radio",
+                  default: false
+              }
           },
 
           // Set up the initial state of the visualization
@@ -55,7 +89,7 @@
               element.innerHTML = '<div id="container" style="height:100%; width:100%; position:absolute; margin: 0 auto"></div>';
           },
           // Render in response to the data or settings changing
-          update: function(data, element, config, queryResponse) {
+          updateAsync: function(data, element, config, queryResponse) {
               debug = false;
 
               if (debug) {
@@ -63,6 +97,18 @@
                 console.log(data);
                 console.log('qr: ');
                 console.log(queryResponse);
+              }
+
+              // Clear any errors from previous updates.
+              this.clearErrors();
+
+              // Throw some errors and exit if the shape of the data isn't what this chart needs.
+              if (queryResponse.fields.dimensions.length == 0) {
+                this.addError({title: "No Dimensions", message: "This chart requires dimensions."});
+                return;
+              } else if (queryResponse.fields.measures.length + queryResponse.fields.table_calculations.length == 0) {
+                this.addError({title: "No Measures / Table Calcs", message: "This chart requires measures or table calculations."});
+                return;
               }
 
               var clmns = [];
@@ -143,7 +189,7 @@
                     categories: clmns
                 },
                 yAxis: {
-                    min: 0,
+                    min: config.y_min,
                     title: {
                       enabled: false
                     }
@@ -162,7 +208,7 @@
                 series: [{
                     name: 'Positive',
                     data: positive_rows,
-                    color: 'green',
+                    color: config.color_range[0],
                     dataLabels: {
                       enabled: true,
                       formatter: function() {
@@ -176,7 +222,7 @@
                 }, {
                     name: 'Negative',
                     data: negative_rows,
-                    color: 'red',
+                    color: config.color_range[1],
                     dataLabels: {
                       enabled: true,
                       formatter: function() {
@@ -195,20 +241,28 @@
                 }, {
                     name: 'Total',
                     data: total,
-                    color: 'blue',
+                    color: config.color_range[2],
                     dataLabels: {
                       enabled: true,
                       formatter: function() {
+                          format_numbers(1);
                           if (this.y != 0) {
-                            return this.y;
+                            var formatted_number = this.y > 999 ? (this.y/1000).toFixed(1) + 'k' : this.y
+                            return formatted_number;
                           } else {
                             return null;
                           }
                       }
                     }
-                }],
-                
-            });
+                }]  
+              });
+
+              // done();
+          },
+
+          format_numbers: function(num) {
+              console.log(num);
+              return true;
           }
       };
 
