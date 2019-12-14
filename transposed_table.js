@@ -8,7 +8,7 @@
               type: "array",
               label: "Color Range",
               display: "colors"
-              // ,default: ['blue', 'skyblue']
+              ,default: ['blue', 'skyblue']
             }
           },
 
